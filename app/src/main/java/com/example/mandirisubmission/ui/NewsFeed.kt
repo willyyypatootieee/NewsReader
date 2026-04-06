@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
@@ -32,18 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mandirisubmission.network.model.Article
-
-
-private val ExpressiveLargeShape = RoundedCornerShape(
-    topStart = 48.dp,
-    topEnd = 16.dp,
-    bottomEnd = 48.dp,
-    bottomStart = 16.dp
-)
-
-private val ExpressiveMediumShape = RoundedCornerShape(24.dp)
-
-private val ExpressiveEasing = CubicBezierEasing(0.4f, 0.0f, 0.2f, 1.0f)
+import com.example.mandirisubmission.ui.components.SquigglyProgressIndicator
+import com.example.mandirisubmission.ui.theme.ExpressiveEasing
+import com.example.mandirisubmission.ui.theme.ExpressiveLargeShape
+import com.example.mandirisubmission.ui.theme.ExpressiveMediumShape
 
 @Composable
 fun NewsApp(articles: List<Article>) {
@@ -307,7 +298,7 @@ fun NewsReaderScreen(article: Article, onBack: () -> Unit) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            Column {
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
                 TopAppBar(
                     title = {
                         Text(
@@ -331,28 +322,13 @@ fun NewsReaderScreen(article: Article, onBack: () -> Unit) {
                     scrollBehavior = scrollBehavior
                 )
                 
-                Box(
+                SquigglyProgressIndicator(
+                    progress = readingProgress,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
-                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(readingProgress)
-                            .fillMaxHeight()
-                            .clip(RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
-                            .background(
-                                Brush.horizontalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colorScheme.primary,
-                                        MaterialTheme.colorScheme.tertiary,
-                                        MaterialTheme.colorScheme.secondary
-                                    )
-                                )
-                            )
-                    )
-                }
+                        .padding(start = 24.dp, end = 24.dp, bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     ) { padding ->
@@ -412,9 +388,6 @@ fun NewsReaderScreen(article: Article, onBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(400.dp)
-                    .graphicsLayer {
-                        translationY = scrollState.value * 0.15f
-                    }
                     .clip(RoundedCornerShape(bottomStart = 56.dp, bottomEnd = 56.dp))
             ) {
                 if (!article.urlToImage.isNullOrBlank()) {
