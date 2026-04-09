@@ -157,6 +157,7 @@ fun NewsFeedScreen(articles: List<Article>, onArticleClick: (Article) -> Unit) {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeaturedNewsCard(article: Article, onClick: (Article) -> Unit) {
